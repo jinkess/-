@@ -37,6 +37,12 @@ function App() {
     }
   };
 
+  const handleDeleteRoom = (roomId: string) => {
+    setRooms(prevRooms => prevRooms.filter(r => r.id !== roomId));
+    setIsModalOpen(false);
+    setSelectedRoom(null);
+  };
+
   const handleAddRoom = (newRoom: Room) => {
     setRooms(prevRooms => [...prevRooms, newRoom]);
   };
@@ -102,6 +108,7 @@ function App() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onUpdate={handleUpdateRoom}
+        onDelete={handleDeleteRoom}
         existingRoomNumbers={rooms.map(r => r.number)}
       />
 

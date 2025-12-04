@@ -6,12 +6,13 @@ interface RoomModalProps {
   isOpen: boolean;
   onClose: () => void;
   onUpdate: (updatedRoom: Room) => void;
+  onDelete: (roomId: string) => void;
   existingRoomNumbers: string[];
 }
 
 type ModalView = 'MAIN' | 'CHECKOUT_CONFIRM' | 'EDIT';
 
-const RoomModal: React.FC<RoomModalProps> = ({ room, isOpen, onClose, onUpdate, existingRoomNumbers }) => {
+const RoomModal: React.FC<RoomModalProps> = ({ room, isOpen, onClose, onUpdate, onDelete, existingRoomNumbers }) => {
   const [view, setView] = useState<ModalView>('MAIN');
   const [formData, setFormData] = useState<CheckInFormData>({
     guestName: '',
@@ -116,9 +117,25 @@ const RoomModal: React.FC<RoomModalProps> = ({ room, isOpen, onClose, onUpdate, 
       setView('MAIN');
   };
 
+  const handleDelete = () => {
+    if (confirm(`确定要删除房间 ${room.number} 吗？此操作无法撤销。`)) {
+      onDelete(room.id);
+    }
+  };
+
   const renderEditForm = () => (
       <form onSubmit={handleEditSubmit} className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-200">
-        <h3 className="text-lg font-bold text-gray-900 mb-4">编辑房间信息</h3>
+        <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-bold text-gray-900">编辑房间信息</h3>
+            <button
+                type="button"
+                onClick={handleDelete}
+                className="text-red-500 hover:text-red-700 text-sm font-medium px-3 py-1 bg-red-50 hover:bg-red-100 rounded-lg transition-colors flex items-center gap-1"
+            >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                删除房间
+            </button>
+        </div>
         
         {editError && (
             <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm border border-red-100">
